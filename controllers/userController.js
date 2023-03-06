@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 // const fs = require('fs');
 // exports.checkBody = (req, res, next) => {
 //   if (!req.body.email || !req.body.password) {
@@ -29,16 +29,17 @@ exports.forgotPassword = async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forgot your Passsword ? Submit a patch request with your new Password and passwordConfirm to:${resetURL}.\nIf you did n't forgot your password please ignore this email`;
+  // const message = `Forgot your Passsword ? Submit a patch request with your new Password and passwordConfirm to:${resetURL}.\nIf you did n't forgot your password please ignore this email`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message,
-    });
+    const resetURL = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetPassword/${resetToken}`;
+    await new Email(user, resetURL).sendPasswordReset();
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10 min)',
+    //   message,
+    // });
 
     res.status(200).json({
       status: 'success',
