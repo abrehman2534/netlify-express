@@ -11,34 +11,44 @@ const profileSchema = new mongoose.Schema({
   },
   company_name: {
     type: String,
-    required:[true,'Company Name is required'],
   },
-  country:{
-    type:String,
-    required:[true,'Country is required']
-  },
-  street_address:{
-    type:String,
-    required:[true, 'Street Address is Required']
-  },
-  apartments:{
-    type:String
-  },
-  email: {
+  country: {
     type: String,
-    trim: true,
-    unique: true,
-    required: [true, 'Email is required or Email is already exists'],
+    required: [true, 'Country is required'],
   },
-  password: {
+  street_address: {
     type: String,
-    trim: true,
-    required: [true, 'Password is required'],
+    required: [true, 'Street Address is Required'],
   },
-  billing_address: {
+  apartments: {
     type: String,
-    trim: true,
-    required: [true, 'Billing Address is required'],
+  },
+  city: {
+    type: String,
+    required: [true, 'City is required'],
+  },
+  state: {
+    type: String,
+    required: [true, 'State is required'],
+  },
+  zipcode: {
+    type: String,
+    required: [true, 'Zipcode is required'],
+  },
+  phone: {
+    type: String,
+    maxLength: 100,
+    required: [true, 'Phone number is required field'],
+  },
+  card_holder_name: {
+    type: String,
+    required: [true, 'Card holder Name is required'],
+  },
+  card_token: {
+    type: String,
+  },
+  stripe_customer_id: {
+    type: String,
   },
 });
 

@@ -6,6 +6,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+
 //1) Middleware
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV == 'development') {

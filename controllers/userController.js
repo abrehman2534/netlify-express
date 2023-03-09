@@ -1,8 +1,11 @@
 const crypto = require('crypto');
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const Profile = require('../models/profileModel');
+const stripe = require('stripe')(`${process.env.STRIPE_SECRET_KEY}`);
 const User = require('../models/userModel');
 const Email = require('../utils/email');
+
 // const fs = require('fs');
 // exports.checkBody = (req, res, next) => {
 //   if (!req.body.email || !req.body.password) {
@@ -166,6 +169,59 @@ exports.loginUser = async (req, res, next) => {
     res.status(400).json({
       status: 'fail',
       message: 'Login failed',
+    });
+  }
+};
+
+exports.profile = async (req, res) => {
+  try {
+    const token = await stripe.tokens.create({
+      card: {
+        number: req.body.number,
+        exp_month: req.body.exp_month,
+        exp_year: req.body.exp_year,
+        cvc: req.body.cvc,
+      },
+    });
+    const customer = await stripe.customers.create({
+      name: req.body.card_holder_name,
+      phone: req.body.phone,
+      address: {
+        city: req.body.city,
+        country: req.body.country,
+        postal_code: req.body.zipcode,
+        state: req.body.state,
+      },
+    });
+    if (token && customer) {
+      console.log(token, 'Token>>>>>>');
+      console.log(customer, 'Customer:::::::::');
+      const newProfile = await Profile.create({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        company_name: req.body.company_name,
+        country: req.body.country,
+        street_address: req.body.street_address,
+        apartments: req.body.apartments,
+        state: req.body.state,
+        city: req.body.city,
+        zipcode: req.body.zipcode,
+        phone: req.body.phone,
+        card_holder_name: req.body.card_holder_name,
+        card_token: token?.card?.id,
+        stripe_customer_id: customer?.id,
+      });
+      res.status(201).json({
+        status: 'success',
+        data: {
+          newProfile,
+        },
+      });
+    }
+  } catch (e) {
+    res.status(400).json({
+      status: 'fail',
+      message: e,
     });
   }
 };
