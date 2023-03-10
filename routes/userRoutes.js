@@ -7,6 +7,11 @@ router
   .get(userController.getAllUsers)
   .post(userController.createUser);
 
+
+  router
+  .route('/profile')
+  .get(userController.getAllProfile)
+  .post(userController.profile);  
 router
   .route('/:id')
   .get(userController.getUser)
@@ -15,5 +20,9 @@ router
 router.route('/login').post(userController.loginUser);
 router.route('/forgotPassword').post(userController.forgotPassword);
 router.route('/resetPassword/:token').patch(userController.resetPasssword);
-router.route('/profile').post(userController.profile);
+
+router
+  .route('/profile')
+  .get(userController.getAllProfile)
+  .post(userController.profile);
 module.exports = router;

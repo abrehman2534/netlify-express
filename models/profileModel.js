@@ -27,6 +27,12 @@ const profileSchema = new mongoose.Schema({
     type: String,
     required: [true, 'City is required'],
   },
+  email: {
+    type: String,
+    trim: true,
+    unique: true,
+    required: [true, 'Email is required or Email is already exists'],
+  },
   state: {
     type: String,
     required: [true, 'State is required'],

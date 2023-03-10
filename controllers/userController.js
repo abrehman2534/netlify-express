@@ -168,7 +168,7 @@ exports.loginUser = async (req, res, next) => {
   } catch (e) {
     res.status(400).json({
       status: 'fail',
-      message: 'Login failed',
+      message: `Login failed${e}`,
     });
   }
 };
@@ -207,6 +207,7 @@ exports.profile = async (req, res) => {
         city: req.body.city,
         zipcode: req.body.zipcode,
         phone: req.body.phone,
+        email: req.body.email,
         card_holder_name: req.body.card_holder_name,
         card_token: token?.card?.id,
         stripe_customer_id: customer?.id,
@@ -218,6 +219,23 @@ exports.profile = async (req, res) => {
         },
       });
     }
+  } catch (e) {
+    res.status(400).json({
+      status: 'fail',
+      message: e,
+    });
+  }
+};
+exports.getAllProfile = async (req, res) => {
+  try {
+    const users = await Profile.find();
+    res.status(200).json({
+      status: 'success',
+      results: users.length,
+      data: {
+        users,
+      },
+    });
   } catch (e) {
     res.status(400).json({
       status: 'fail',
